@@ -1,13 +1,11 @@
-#include <QWindow>
 #include <QApplication>
+#include "CMainWindow/CMainWindow.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    
-    QWindow window;
-    window.setTitle("Lab 1 - Yooo brooo");
-    window.resize(800, 600);
-    window.show();
+
+    CMainWindow w;
+    w.show();
 
     return app.exec();
 }
