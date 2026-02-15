@@ -17,10 +17,13 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets Gui Core)
 add_executable( Lab1_KG 
                 core/main.cpp
                 core/CScene/CScene.cpp
-                core/CFigure/CFigure.cpp
+                core/CCanvas/CCanvas.cpp
+                core/Figures/CFigure/CFigure.cpp
+                core/Figures/CTriangle/CTriangle.cpp
                 core/CMainWindow/CMainWindow.cpp
                 core/CMainWindow/CMainWindow.ui
 )
 
+target_include_directories(Lab1_KG PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/core)
 # Підключаємо бібліотеки Qt до твого файлу
 target_link_libraries(Lab1_KG PRIVATE Qt6::Widgets Qt6::Gui Qt6::Core)

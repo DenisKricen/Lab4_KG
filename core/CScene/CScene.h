@@ -3,15 +3,24 @@
 
 #include <QGraphicsScene>
 #include <QPainter>
+#include <QObject>
+#include "Figures/CFigure/CFigure.h"
+#include "CCanvas/CCanvas.h"
+#include <vector>
 
-class CScene : public QGraphicsScene {
-    Q_OBJECT // Макрос потрібен, якщо будеш використовувати сигнали/слоти
+class CScene : public QObject {
+    Q_OBJECT
+
+    CCanvas* canvas;
+    std::vector<CFigure*> figures;
+
 public:
-    explicit CScene(QObject *parent = nullptr);
 
-protected:
-    // Тут малюється задній фон (сітка, осі)
-    void drawBackground(QPainter *painter, const QRectF &rect) override;
+    explicit CScene(QObject* parent=nullptr);
+    void setWidget(QWidget* widget);
+    void addFigure(CFigure* figure);
+    void render(QPainter& painter);
+
 };
 
 #endif // CScene_H

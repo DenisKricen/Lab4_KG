@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y \
     libgl1-mesa-dev \
     git \
     gdb \
-    sudo \
 
     #To resize windows
     libxcb-icccm4 \
@@ -30,6 +29,3 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 ENV QT_XCB_GL_INTEGRATION=none
-
-ARG USERNAME=ubuntu
-USER $USERNAME

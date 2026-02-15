@@ -1,37 +1,34 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef CMAINWINDOW_H
+#define CMAINWINDOW_H
 
 #include <QWidget>
-#include <QGraphicsView>
-#include <QPushButton>
-#include <QPainter>
-#include <QPaintEvent>
-#include "../CScene/CScene.h"    
-#include "../CFigure/CFigure.h"  
+#include "CScene/CScene.h"    
+#include "CCanvas/CCanvas.h"
+#include "Figures/CFigure/CFigure.h"  
 
 namespace Ui {
-class CMainWindow;
+    class CMainWindow;
 }
 
 class CMainWindow : public QWidget {
     Q_OBJECT
+private:
+    CScene* scene;
+    CCanvas* canvas;
 
 public:
     CMainWindow(QWidget *parent = nullptr);
     ~CMainWindow();
 
-protected:
-
-    virtual void paintEvent(QPaintEvent *event) override;
-
 private slots:
 
-    void onAddTriangleClicked();
-    void onDrawClicked();
-    void onClearClicked();
+
+    // void onAddTriangleClicked();
+    // void onDrawClicked();
+    // void onClearClicked();
 
 private:
     Ui::CMainWindow *ui;
 };
 
-#endif // MAINWINDOW_H
+#endif // CMAINWINDOW_H
