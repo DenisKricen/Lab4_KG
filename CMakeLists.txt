@@ -20,10 +20,16 @@ add_executable( Lab1_KG
                 core/CCanvas/CCanvas.cpp
                 core/Figures/CFigure/CFigure.cpp
                 core/Figures/CTriangle/CTriangle.cpp
+                core/Figures/CHexagon/CHexagon.cpp
                 core/CMainWindow/CMainWindow.cpp
                 core/CMainWindow/CMainWindow.ui
+                core/CProperties/CProperties.cpp
 )
 
 target_include_directories(Lab1_KG PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/core)
+
+# На обробляй CProperties.cpp через AUTOUIC
+set_source_files_properties(core/CProperties/CProperties.cpp PROPERTIES SKIP_AUTOUIC ON)
+
 # Підключаємо бібліотеки Qt до твого файлу
 target_link_libraries(Lab1_KG PRIVATE Qt6::Widgets Qt6::Gui Qt6::Core)

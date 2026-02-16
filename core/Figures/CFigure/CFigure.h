@@ -2,6 +2,7 @@
 #define CFIGURE_H
 
 #include <QPainter>
+#include "CProperties/CProperties.h"
 
 class CFigure {
 

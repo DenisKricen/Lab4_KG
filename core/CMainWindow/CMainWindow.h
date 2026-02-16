@@ -4,8 +4,9 @@
 #include <QWidget>
 #include "CScene/CScene.h"    
 #include "CCanvas/CCanvas.h"
-#include "Figures/CFigure/CFigure.h"  
+#include "Figures/CFigure/CFigure.h"
 
+// Forward declaration для використання в CProperties
 namespace Ui {
     class CMainWindow;
 }
@@ -15,20 +16,17 @@ class CMainWindow : public QWidget {
 private:
     CScene* scene;
     CCanvas* canvas;
+    Ui::CMainWindow *ui;
 
 public:
     CMainWindow(QWidget *parent = nullptr);
     ~CMainWindow();
 
 private slots:
-
-
-    // void onAddTriangleClicked();
+    void onAddTriangleClicked();
+    void onClearClicked();
     // void onDrawClicked();
     // void onClearClicked();
-
-private:
-    Ui::CMainWindow *ui;
 };
 
 #endif // CMAINWINDOW_H

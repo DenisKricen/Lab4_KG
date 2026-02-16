@@ -1,5 +1,7 @@
 #include "CMainWindow.h"
 #include "ui_CMainWindow.h"
+#include "Figures/CTriangle/CTriangle.h"
+#include "Figures/CHexagon/CHexagon.h"
 #include <iostream>
 #include <cmath>
 using std::cout, std::endl;
@@ -13,11 +15,31 @@ CMainWindow::CMainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::CMainWin
     canvas->setScene(scene);
     scene->setWidget(canvas);
 
-    // connect(scene, &CScene::changed, canvas, QOverload<>::of(&QWidget::update))
-
+    connect(ui->btnCreate, &QPushButton::clicked, this, &CMainWindow::onAddTriangleClicked);
+    connect(ui->btnClear,  &QPushButton::clicked, this, &CMainWindow::onClearClicked);
 }
 
 CMainWindow::~CMainWindow() {
     delete ui;
+}
+
+void CMainWindow::onAddTriangleClicked() {
+
+    CProperties prop;
+    prop.setCoefs(scene->getAbsSegment(), scene->getOrdSegment());
+    prop.updateProperties(ui);
+
+    CHexagon* hex = new CHexagon();
+    hex->setProperties(prop);   
+    scene->addFigure(hex);
+
+    canvas->update();
+}
+
+void CMainWindow::onClearClicked() {
+
+    scene->clearFigures();
+    canvas->update();
+
 }
 
