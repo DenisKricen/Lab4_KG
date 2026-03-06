@@ -31,6 +31,7 @@ void CHexagon::draw(QPainter& painter) {
     painter.translate(centerX, -centerY);
 
     QPolygonF hexagon;
+    QPolygonF center;
     for (int i = 0; i < 6; i++) {
         double angle = M_PI / 3.0 * i;
         double dx = size * cos(angle);
@@ -39,6 +40,31 @@ void CHexagon::draw(QPainter& painter) {
         hexagon << QPointF(dx, -dy);
     }
     painter.drawPolygon(hexagon);
+
+    //Center
+    double dotScale=0.0001;
+    center << QPointF(size*dotScale,   size*dotScale)   << QPointF(size*dotScale*2, size*dotScale) \
+           << QPointF(size*dotScale*2, size*dotScale*2) << QPointF(size*dotScale,   size*dotScale*2);
+
+    painter.save();
+    painter.setPen(QPen(Qt::black, 1));
+    painter.setBrush(QBrush(Qt::black));
+    painter.scale(0.2,0.2);
+    painter.drawPolygon(center);
+    painter.restore();
+
+    //Radius
+    painter.save();
+    painter.setPen(QPen(Qt::black, 0.1));
+    painter.drawLine(0, 0,size,0);
+    painter.restore();
+
+    //Circle
+    painter.save();
+    painter.setPen(QPen(Qt::black, 0.1));
+    painter.setBrush(QBrush(Qt::NoBrush));
+    painter.drawEllipse(-size,-size,size*2, size*2);
+    painter.restore();
 
     painter.restore();
 }

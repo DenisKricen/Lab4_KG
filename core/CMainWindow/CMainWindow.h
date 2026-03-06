@@ -1,6 +1,7 @@
 #ifndef CMAINWINDOW_H
 #define CMAINWINDOW_H
 
+#include <QColor>
 #include <QWidget>
 #include "CScene/CScene.h"    
 #include "CCanvas/CCanvas.h"
@@ -17,6 +18,12 @@ private:
     CCanvas* canvas;
     Ui::CMainWindow *ui;
 
+    QColor fillColor;
+    QColor lineColor;
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
+
 public:
     CMainWindow(QWidget *parent = nullptr);
     ~CMainWindow();
@@ -24,6 +31,8 @@ public:
 private slots:
     void onCreateClicked();
     void onClearClicked();
+    void onChooseOutColor();
+    void onChooseInColor();
 };
 
 #endif // CMAINWINDOW_H

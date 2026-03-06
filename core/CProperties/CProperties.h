@@ -20,7 +20,7 @@ class CProperties {
     double ordCoef;
 
     CProperties();
-    void updateProperties(Ui::CMainWindow* ui);
+    void updateProperties(Ui::CMainWindow* ui, const QColor& out, const QColor& fill);
     void setCoefs(double absCoef, double ordCoef);
 
 };

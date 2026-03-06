@@ -57,25 +57,13 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QComboBox" name="cmbOutCol">
-        <item>
-         <property name="text">
-          <string>Red</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Green</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Blue</string>
-         </property>
-        </item>
-       </widget>
-      </item>
+    <item>
+     <widget class="QPushButton" name="btnOutCol">
+      <property name="text">
+       <string>Choose outline color</string>
+      </property>
+     </widget>
+    </item>
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
@@ -83,25 +71,13 @@
         </property>
        </widget>
       </item>
-      <item>
-       <widget class="QComboBox" name="cmbInCol">
-        <item>
-         <property name="text">
-          <string>Red</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Green</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Blue</string>
-         </property>
-        </item>
-       </widget>
-      </item>
+    <item>
+     <widget class="QPushButton" name="btnInCol">
+      <property name="text">
+       <string>Choose fill color</string>
+      </property>
+     </widget>
+    </item>
       <item>
        <widget class="QLabel" name="label_3">
         <property name="text">
@@ -124,10 +100,10 @@
          </size>
         </property>
         <property name="minimum">
-         <number>-25</number>
+         <number>-10</number>
         </property>
         <property name="maximum">
-         <number>25</number>
+         <number>10</number>
         </property>
        </widget>
       </item>
@@ -141,10 +117,10 @@
       <item>
        <widget class="QSpinBox" name="sbAbs">
         <property name="minimum">
-         <number>-25</number>
+         <number>-10</number>
         </property>
         <property name="maximum">
-         <number>25</number>
+         <number>10</number>
         </property>
        </widget>
       </item>
@@ -167,7 +143,7 @@
          <number>1</number>
         </property>
         <property name="maximum">
-         <number>25</number>
+         <number>10</number>
         </property>
        </widget>
       </item>

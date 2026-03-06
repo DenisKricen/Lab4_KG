@@ -7,6 +7,7 @@
 void drawAxis(QPainter& painter, int x1, int y1, int x2, int y2, QColor color, int marks) {
     painter.setPen(QPen(color, 1));
     painter.drawLine(x1, y1, x2, y2);
+
 }
 
 void CScene::drawCoorSystem(QPainter& painter, int width, int height, int marks) {
@@ -14,12 +15,23 @@ void CScene::drawCoorSystem(QPainter& painter, int width, int height, int marks)
     drawAxis(painter, width/2, 0, width/2, height,  Qt::black, 1);
     drawAxis(painter, 0, height/2, width, height/2, Qt::black, 1);
 
+    //Arrows for axis
+    double offset=width*0.02;
+    painter.drawLine(width/2, 0, width/2+offset, 0+offset);
+    painter.drawLine(width/2, 0, width/2-offset, 0+offset);
+    painter.setFont(QFont("Arial", width/5/marks));
+    painter.drawText(width/2-offset*2, height*0.02, "Y");
+
+    painter.drawLine(width, height/2, width-offset, height/2+offset);
+    painter.drawLine(width, height/2, width-offset, height/2-offset);
+    painter.drawText(width-offset, height/2*0.95, "X");
+
     int markSize = 10;
     ordSegment=height/2/marks*0.98;
     absSegment=width/2/marks*0.98;
     double numberBias=absSegment/4;
+    double ordBias=ordSegment/4;
 
-    painter.setFont(QFont("Arial", width/5/marks));
     painter.drawText(width/2+numberBias*0.9,height/2+(markSize*2)+numberBias,"0");
 
     for(int i=1;i<=marks;i++) {
@@ -35,8 +47,8 @@ void CScene::drawCoorSystem(QPainter& painter, int width, int height, int marks)
         painter.setFont(QFont("Arial", height/5/marks));
         drawAxis(painter, width/2-(markSize/2), height/2-i*(ordSegment), width/2+(markSize/2), height/2-i*(ordSegment), Qt::black, 1);
         drawAxis(painter, width/2-(markSize/2), height/2+i*(ordSegment), width/2+(markSize/2), height/2+i*(ordSegment), Qt::black, 1);
-        painter.drawText(width/2+(markSize/2)+(numberBias),height/2-i*(ordSegment)+numberBias,QString::number(i));
-        painter.drawText(width/2+(markSize/2)+(numberBias),height/2+i*(ordSegment)+numberBias,QString::number(-i));
+        painter.drawText(width/2+(markSize/2)+(ordBias),height/2-i*(ordSegment)+ordBias,QString::number(i));
+        painter.drawText(width/2+(markSize/2)+(ordBias),height/2+i*(ordSegment)+ordBias,QString::number(-i));
     }
 
 }
