@@ -1,11 +1,22 @@
 #include "CBeziersCurve.h"
 #include <cmath>
+#include <sstream>
 
 CBeziersCurve::CBeziersCurve() {
     pace=0.05;
     tMin=0.0;
     tMax=1.0;
+    curveColor = Qt::blue;
+    rectColor = Qt::black;
     drawMethod = &CBeziersCurve::drawParam;
+}
+
+void CBeziersCurve::setCurveColor(const QColor& color) {
+    curveColor = color;
+}
+
+void CBeziersCurve::setRectColor(const QColor& color) {
+    rectColor = color;
 }
 
 void CBeziersCurve::addPoint(const QPointF& point) {
@@ -42,15 +53,23 @@ void CBeziersCurve::setPace(double p) {
     if (p > 0) pace = p;
 }
 
+double CBeziersCurve::getPace() const { return pace; }
+
 void CBeziersCurve::setTMin(double val) {
     if (val >= 0.0 && val < tMax)
         tMin = val;
 }
 
+double CBeziersCurve::getTMin() const { return tMin; }
+
 void CBeziersCurve::setTMax(double val) {
     if (val <= 1.0 && val > tMin)
         tMax = val;
 }
+
+double CBeziersCurve::getTMax() const { return tMax; }
+QColor CBeziersCurve::getCurveColor() const { return curveColor; }
+QColor CBeziersCurve::getRectColor() const { return rectColor; }
 
 std::string CBeziersCurve::getType() const{
     return "beziers_curve";
@@ -64,11 +83,33 @@ int fct(int num) {
 }
 
 std::string CBeziersCurve::serialize() const {
-    return " ";
+    std::ostringstream oss;
+    oss << pace << " " << tMin << " " << tMax << " "
+        << curveColor.red() << " " << curveColor.green() << " " << curveColor.blue() << " "
+        << rectColor.red() << " " << rectColor.green() << " " << rectColor.blue();
+    for (const auto& p : curve) {
+        oss << " " << p.x() << " " << p.y();
+    }
+    return oss.str();
 }
 
 CBeziersCurve* CBeziersCurve::deserialize(const std::string data) {
-    return new CBeziersCurve();
+    CBeziersCurve* c = new CBeziersCurve();
+    std::istringstream iss(data);
+    double p, tmin, tmax;
+    int cr, cg, cb, rr, rg, rb;
+    if (!(iss >> p >> tmin >> tmax >> cr >> cg >> cb >> rr >> rg >> rb))
+        return c;
+    c->pace = p;
+    c->tMin = tmin;
+    c->tMax = tmax;
+    c->curveColor = QColor(cr, cg, cb);
+    c->rectColor = QColor(rr, rg, rb);
+    double x, y;
+    while (iss >> x >> y) {
+        c->curve.append(QPointF(x, y));
+    }
+    return c;
 }
 
 void CBeziersCurve::setDrawMethod(void (CBeziersCurve::* method)(QPainter&)) {
@@ -95,7 +136,8 @@ void CBeziersCurve::drawRect(QPainter& painter) {
     }
 
     painter.save();
-    QPen boxPen(Qt::green, 1, Qt::DashLine);
+    QPen boxPen(rectColor, 2, Qt::DashLine);
+    boxPen.setCosmetic(true);
     painter.setPen(boxPen);
 
     painter.drawRect(QRectF(QPointF(minX, minY), QPointF(maxX, maxY)));
@@ -108,7 +150,9 @@ void CBeziersCurve::drawParam(QPainter& painter) {
     int n = dotsCount - 1;
 
     QVector<QPointF> points;
-    for(double t=tMin; t<=tMax+pace/2; t+=pace) {
+    int numSteps = std::max(1, static_cast<int>(std::ceil((tMax - tMin) / pace)));
+    for(int step = 0; step <= numSteps; ++step) {
+        double t = tMin + step * (tMax - tMin) / numSteps;
         QPointF point;
         for(int i=0;i<dotsCount;i++) {
 
@@ -122,7 +166,7 @@ void CBeziersCurve::drawParam(QPainter& painter) {
     }
 
     painter.save();
-    QPen pen(Qt::blue, 2);
+    QPen pen(curveColor, 2);
     pen.setCosmetic(true);
     painter.setPen(pen);
     painter.drawPolyline(points);
@@ -152,7 +196,9 @@ void CBeziersCurve::drawMatrix(QPainter& painter) {
     }
 
     QVector<QPointF> points;
-    for(double t = tMin; t <= tMax + pace / 2.0; t += pace) {
+    int numSteps = std::max(1, static_cast<int>(std::ceil((tMax - tMin) / pace)));
+    for(int step = 0; step <= numSteps; ++step) {
+        double t = tMin + step * (tMax - tMin) / numSteps;
         
         QVector<double> T;
         for(int i = n; i >= 0; i--) {
@@ -176,7 +222,7 @@ void CBeziersCurve::drawMatrix(QPainter& painter) {
     }
 
     painter.save();
-    QPen pen(Qt::red, 2);
+    QPen pen(curveColor, 2);
     pen.setCosmetic(true);
     painter.setPen(pen);
     painter.drawPolyline(points);

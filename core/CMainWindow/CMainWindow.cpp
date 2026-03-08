@@ -19,8 +19,18 @@ CMainWindow::CMainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::CMainWin
     canvas->setScene(scene);
     scene->setWidget(canvas);
 
-    lineColor = Qt::red;
-    fillColor = Qt::red;
+    // Load saved curve from file
+    scene->loadFigures("figures.txt");
+
+    // Restore UI state from loaded curve
+    CBeziersCurve* loadedCurve = scene->getCurve();
+    if (loadedCurve) {
+        lineColor = loadedCurve->getRectColor();
+        fillColor = loadedCurve->getCurveColor();
+    } else {
+        lineColor = Qt::red;
+        fillColor = Qt::red;
+    }
 
     connect(ui->btnCreate, &QPushButton::clicked, this, &CMainWindow::onAddPointClicked);
     connect(ui->btnClear,  &QPushButton::clicked, this, &CMainWindow::onClearClicked);
@@ -29,10 +39,16 @@ CMainWindow::CMainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::CMainWin
     connect(ui->pointList, &QListWidget::itemDoubleClicked, this, &CMainWindow::onPointItemClicked);
     connect(ui->pointList->model(), &QAbstractItemModel::rowsMoved, this, &CMainWindow::onPointsMoved);
 
-    // Set initial spinbox values and connect t-parameter controls
-    ui->valueT->setValue(0.05);
-    ui->minValueT->setValue(0.0);
-    ui->maxValueT->setValue(1.0);
+    if (loadedCurve) {
+        ui->valueT->setValue(loadedCurve->getPace());
+        ui->minValueT->setValue(loadedCurve->getTMin());
+        ui->maxValueT->setValue(loadedCurve->getTMax());
+        rebuildPointList();
+    } else {
+        ui->valueT->setValue(0.05);
+        ui->minValueT->setValue(0.0);
+        ui->maxValueT->setValue(1.0);
+    }
 
     connect(ui->valueT, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [this](double val) {
         CBeziersCurve* curve = scene->getCurve();
@@ -42,6 +58,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::CMainWin
         }
     });
     connect(ui->minValueT, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [this](double val) {
+        ui->maxValueT->setMinimum(val + ui->maxValueT->singleStep());
         CBeziersCurve* curve = scene->getCurve();
         if (curve) {
             curve->setTMin(val);
@@ -49,6 +66,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::CMainWin
         }
     });
     connect(ui->maxValueT, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [this](double val) {
+        ui->minValueT->setMaximum(val - ui->minValueT->singleStep());
         CBeziersCurve* curve = scene->getCurve();
         if (curve) {
             curve->setTMax(val);
@@ -58,6 +76,7 @@ CMainWindow::CMainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::CMainWin
 }
 
 CMainWindow::~CMainWindow() {
+    scene->saveFigures("figures.txt");
     delete ui;
 }
 
@@ -98,12 +117,22 @@ void CMainWindow::onChooseOutColor() {
     QColor color = QColorDialog::getColor(lineColor, this, "Choose rectangle color");
     if (!color.isValid()) return;
     lineColor = color;
+    CBeziersCurve* curve = scene->getCurve();
+    if (curve) {
+        curve->setRectColor(color);
+        canvas->update();
+    }
 }
 
 void CMainWindow::onChooseInColor() {
     QColor color = QColorDialog::getColor(fillColor, this, "Choose curve color");
     if (!color.isValid()) return;
     fillColor = color;
+    CBeziersCurve* curve = scene->getCurve();
+    if (curve) {
+        curve->setCurveColor(color);
+        canvas->update();
+    }
 }
 
 void CMainWindow::onPointItemClicked(QListWidgetItem* item) {
@@ -144,14 +173,11 @@ void CMainWindow::onPointsMoved() {
     CBeziersCurve* curve = scene->getCurve();
     if (!curve) return;
 
-    // Rebuild curve points order from the current list order
     const auto& oldPts = curve->getPoints();
     QVector<QPointF> newOrder;
 
     for (int i = 0; i < ui->pointList->count(); ++i) {
         QString text = ui->pointList->item(i)->text();
-        // Parse "X: ..., Y: ..." back to find the original index
-        // Match by iterating old points to find which one corresponds
         for (int j = 0; j < oldPts.size(); ++j) {
             QString expected = QString("X: %1 , Y: %2").arg(oldPts[j].x(), 0, 'f', 2).arg(oldPts[j].y(), 0, 'f', 2);
             if (text == expected) {

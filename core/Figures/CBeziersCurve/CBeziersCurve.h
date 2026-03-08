@@ -1,6 +1,7 @@
 #ifndef BEZIERS_CURVE_H
 #define BEZIERS_CURVE_H
 #include "Figures/CFigure/CFigure.h"
+#include <QColor>
 
 class CBeziersCurve : public CFigure {
 
@@ -8,6 +9,8 @@ class CBeziersCurve : public CFigure {
     double pace;
     double tMin;
     double tMax;
+    QColor curveColor;
+    QColor rectColor;
     void (CBeziersCurve::* drawMethod)(QPainter&);
 
     void drawRect(QPainter& painter);
@@ -24,8 +27,15 @@ class CBeziersCurve : public CFigure {
     const QVector<QPointF>& getPoints() const;
 
     void setPace(double p);
+    double getPace() const;
     void setTMin(double val);
+    double getTMin() const;
     void setTMax(double val);
+    double getTMax() const;
+    QColor getCurveColor() const;
+    QColor getRectColor() const;
+    void setCurveColor(const QColor& color);
+    void setRectColor(const QColor& color);
 
     void draw(QPainter& painter) override;
     void drawParam(QPainter& painter);

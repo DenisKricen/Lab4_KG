@@ -3,6 +3,7 @@
 #include "Figures/CTriangle/CTriangle.h"
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 void drawAxis(QPainter& painter, int x1, int y1, int x2, int y2, QColor color, int marks) {
     painter.setPen(QPen(color, 1));
@@ -29,6 +30,10 @@ void CScene::drawCoorSystem(QPainter& painter, int width, int height, int marks)
     int markSize = 10;
     ordSegment=height/2/marks*0.98;
     absSegment=width/2/marks*0.98;
+    // Use uniform scaling so figures aren't distorted
+    double uniformSegment = std::min(absSegment, ordSegment);
+    absSegment = uniformSegment;
+    ordSegment = uniformSegment;
     double numberBias=absSegment/4;
     double ordBias=ordSegment/4;
 
@@ -151,4 +156,8 @@ void CScene::loadFigures(const std::string& filename) {
         }
     }
     file.close();
+
+    if (!getCurve()) {
+        addFigure(new CBeziersCurve());
+    }
 }
