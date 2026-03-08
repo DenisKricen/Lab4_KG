@@ -36,7 +36,34 @@
     <number>9</number>
    </property>
    <item>
-    <widget class="CCanvas" name="canvas" native="true"/>
+    <widget class="CCanvas" name="canvas" native="true">
+     <widget class="QPushButton" name="toMatrixMode">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>111</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Matrix mode</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="toParamMode">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>30</y>
+        <width>111</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Parameters mode</string>
+      </property>
+     </widget>
+    </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox">
@@ -92,6 +119,20 @@
         </property>
         <property name="dragDropMode">
          <enum>QAbstractItemView::InternalMove</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Log:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPlainTextEdit" name="logText">
+        <property name="readOnly">
+         <bool>true</bool>
         </property>
        </widget>
       </item>

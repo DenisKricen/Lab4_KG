@@ -86,7 +86,8 @@ std::string CBeziersCurve::serialize() const {
     std::ostringstream oss;
     oss << pace << " " << tMin << " " << tMax << " "
         << curveColor.red() << " " << curveColor.green() << " " << curveColor.blue() << " "
-        << rectColor.red() << " " << rectColor.green() << " " << rectColor.blue();
+        << rectColor.red() << " " << rectColor.green() << " " << rectColor.blue() << " "
+        << (isMatrixMode() ? 1 : 0);
     for (const auto& p : curve) {
         oss << " " << p.x() << " " << p.y();
     }
@@ -97,14 +98,15 @@ CBeziersCurve* CBeziersCurve::deserialize(const std::string data) {
     CBeziersCurve* c = new CBeziersCurve();
     std::istringstream iss(data);
     double p, tmin, tmax;
-    int cr, cg, cb, rr, rg, rb;
-    if (!(iss >> p >> tmin >> tmax >> cr >> cg >> cb >> rr >> rg >> rb))
+    int cr, cg, cb, rr, rg, rb, mode;
+    if (!(iss >> p >> tmin >> tmax >> cr >> cg >> cb >> rr >> rg >> rb >> mode))
         return c;
     c->pace = p;
     c->tMin = tmin;
     c->tMax = tmax;
     c->curveColor = QColor(cr, cg, cb);
     c->rectColor = QColor(rr, rg, rb);
+    c->drawMethod = (mode == 1) ? &CBeziersCurve::drawMatrix : &CBeziersCurve::drawParam;
     double x, y;
     while (iss >> x >> y) {
         c->curve.append(QPointF(x, y));
@@ -114,6 +116,10 @@ CBeziersCurve* CBeziersCurve::deserialize(const std::string data) {
 
 void CBeziersCurve::setDrawMethod(void (CBeziersCurve::* method)(QPainter&)) {
     drawMethod = method;
+}
+
+bool CBeziersCurve::isMatrixMode() const {
+    return drawMethod == &CBeziersCurve::drawMatrix;
 }
 
 void CBeziersCurve::draw(QPainter& painter) {
@@ -228,4 +234,39 @@ void CBeziersCurve::drawMatrix(QPainter& painter) {
     painter.drawPolyline(points);
     painter.restore();
     drawRect(painter);
+}
+
+QString CBeziersCurve::getMatrixInfo() const {
+    if (curve.size() < 2) return "Not enough points for matrix.";
+    int dotsCount = curve.size();
+    int n = dotsCount - 1;
+
+    QVector<QVector<double>> M(dotsCount, QVector<double>(dotsCount, 0.0));
+    for (int i = 0; i <= n; i++) {
+        for (int j = 0; j <= n - i; j++) {
+            double Cnj = (double)fct(n) / (fct(j) * fct(n - j));
+            double Cji = (double)fct(n - j) / (fct(n - i - j) * fct((n - j) - (n - i - j)));
+            M[i][j] = pow(-1, n - j - i) * Cnj * Cji;
+        }
+    }
+
+    int zeroCount = 0;
+    for (int i = 0; i < dotsCount; i++)
+        for (int j = 0; j < dotsCount; j++)
+            if (M[i][j] == 0.0) zeroCount++;
+
+    double firstRowSum = 0.0;
+    for (int j = 0; j < dotsCount; j++)
+        firstRowSum += M[0][j];
+
+    double firstColSum = 0.0;
+    for (int i = 0; i < dotsCount; i++)
+        firstColSum += M[i][0];
+
+    QString info;
+    info += QString("Coefficient matrix (%1x%1):\n").arg(dotsCount);
+    info += QString("Zero elements: %1\n").arg(zeroCount);
+    info += QString("First row sum: %1\n").arg(firstRowSum, 0, 'f', 4);
+    info += QString("First column sum: %1").arg(firstColSum, 0, 'f', 4);
+    return info;
 }

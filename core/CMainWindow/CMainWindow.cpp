@@ -27,9 +27,11 @@ CMainWindow::CMainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::CMainWin
     if (loadedCurve) {
         lineColor = loadedCurve->getRectColor();
         fillColor = loadedCurve->getCurveColor();
+        matrixMode = loadedCurve->isMatrixMode();
     } else {
         lineColor = Qt::red;
         fillColor = Qt::red;
+        matrixMode = false;
     }
 
     connect(ui->btnCreate, &QPushButton::clicked, this, &CMainWindow::onAddPointClicked);
@@ -38,6 +40,8 @@ CMainWindow::CMainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::CMainWin
     connect(ui->btnInCol,  &QPushButton::clicked, this, &CMainWindow::onChooseInColor);
     connect(ui->pointList, &QListWidget::itemDoubleClicked, this, &CMainWindow::onPointItemClicked);
     connect(ui->pointList->model(), &QAbstractItemModel::rowsMoved, this, &CMainWindow::onPointsMoved);
+    connect(ui->toMatrixMode, &QPushButton::clicked, this, &CMainWindow::onMatrixMode);
+    connect(ui->toParamMode, &QPushButton::clicked, this, &CMainWindow::onParamMode);
 
     if (loadedCurve) {
         ui->valueT->setValue(loadedCurve->getPace());
@@ -49,6 +53,8 @@ CMainWindow::CMainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::CMainWin
         ui->minValueT->setValue(0.0);
         ui->maxValueT->setValue(1.0);
     }
+
+    updateLog();
 
     connect(ui->valueT, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [this](double val) {
         CBeziersCurve* curve = scene->getCurve();
@@ -99,6 +105,7 @@ void CMainWindow::onAddPointClicked() {
         if (curve) {
             curve->addPoint(dlg.getPoint());
             rebuildPointList();
+            updateLog();
             canvas->update();
         }
     }
@@ -110,6 +117,7 @@ void CMainWindow::onClearClicked() {
         curve->clearPoints();
     }
     rebuildPointList();
+    updateLog();
     canvas->update();
 }
 
@@ -151,6 +159,7 @@ void CMainWindow::onPointItemClicked(QListWidgetItem* item) {
             curve->editPoint(index, dlg.getPoint());
         }
         rebuildPointList();
+        updateLog();
         canvas->update();
     }
 }
@@ -195,3 +204,35 @@ void CMainWindow::onPointsMoved() {
     canvas->update();
 }
 
+void CMainWindow::onMatrixMode() {
+    CBeziersCurve* curve = scene->getCurve();
+    if (curve) {
+        curve->setDrawMethod(&CBeziersCurve::drawMatrix);
+        matrixMode = true;
+        updateLog();
+        canvas->update();
+    }
+}
+
+void CMainWindow::onParamMode() {
+    CBeziersCurve* curve = scene->getCurve();
+    if (curve) {
+        curve->setDrawMethod(&CBeziersCurve::drawParam);
+        matrixMode = false;
+        updateLog();
+        canvas->update();
+    }
+}
+
+void CMainWindow::updateLog() {
+    ui->logText->clear();
+    CBeziersCurve* curve = scene->getCurve();
+    if (!curve) return;
+
+    if (matrixMode) {
+        ui->logText->appendPlainText("=== MATRIX MODE ===");
+        ui->logText->appendPlainText(curve->getMatrixInfo());
+    } else {
+        ui->logText->appendPlainText("=== PARAMETERS MODE ===");
+    }
+}

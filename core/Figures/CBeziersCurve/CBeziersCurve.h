@@ -2,6 +2,7 @@
 #define BEZIERS_CURVE_H
 #include "Figures/CFigure/CFigure.h"
 #include <QColor>
+#include <QString>
 
 class CBeziersCurve : public CFigure {
 
@@ -41,6 +42,9 @@ class CBeziersCurve : public CFigure {
     void drawParam(QPainter& painter);
     void drawMatrix(QPainter& painter);
     void setDrawMethod(void (CBeziersCurve::* drawMethod)(QPainter&));
+    bool isMatrixMode() const;
+
+    QString getMatrixInfo() const;
 
     std::string serialize() const override;
     static CBeziersCurve* deserialize(const std::string data);

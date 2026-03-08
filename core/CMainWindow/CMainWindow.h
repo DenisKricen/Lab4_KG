@@ -23,6 +23,8 @@ private:
     QColor lineColor;
 
     void rebuildPointList();
+    void updateLog();
+    bool matrixMode = false;
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -38,6 +40,8 @@ private slots:
     void onChooseInColor();
     void onPointItemClicked(QListWidgetItem* item);
     void onPointsMoved();
+    void onMatrixMode();
+    void onParamMode();
 };
 
 #endif // CMAINWINDOW_H
