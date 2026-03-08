@@ -3,6 +3,7 @@
 
 #include <QColor>
 #include <QWidget>
+#include <QListWidgetItem>
 #include "CScene/CScene.h"    
 #include "CCanvas/CCanvas.h"
 #include "Figures/CFigure/CFigure.h"
@@ -21,6 +22,8 @@ private:
     QColor fillColor;
     QColor lineColor;
 
+    void rebuildPointList();
+
 protected:
     void resizeEvent(QResizeEvent *event) override;
 
@@ -29,10 +32,12 @@ public:
     ~CMainWindow();
 
 private slots:
-    void onCreateClicked();
+    void onAddPointClicked();
     void onClearClicked();
     void onChooseOutColor();
     void onChooseInColor();
+    void onPointItemClicked(QListWidgetItem* item);
+    void onPointsMoved();
 };
 
 #endif // CMAINWINDOW_H

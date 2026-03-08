@@ -1,0 +1,36 @@
+name: Build C++ Qt6 Project
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t lab2-kg .
+
+      - name: Build project inside container
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/workspaces/code \
+            -w /workspaces/code \
+            lab2-kg \
+            bash -c "
+              rm -rf build && mkdir build && cd build &&
+              cmake .. -DCMAKE_TOOLCHAIN_FILE=/root/vcpkg/scripts/buildsystems/vcpkg.cmake &&
+              cmake --build .
+            "
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lab2_KG
+          path: build/Lab2_KG

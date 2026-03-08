@@ -26,7 +26,7 @@
    <bool>false</bool>
   </property>
   <property name="windowTitle">
-   <string>Lab1 Computer Graphic</string>
+   <string>Lab2 Computer Graphic</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="4,0">
    <property name="spacing">
@@ -41,7 +41,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Hexagon Creation Menu</string>
+      <string>Bezier Curve Menu</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
@@ -53,104 +53,96 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Outline color:</string>
+         <string>Rectangle color:</string>
         </property>
        </widget>
       </item>
-    <item>
-     <widget class="QPushButton" name="btnOutCol">
-      <property name="text">
-       <string>Choose outline color</string>
-      </property>
-     </widget>
-    </item>
+      <item>
+       <widget class="QPushButton" name="btnOutCol">
+        <property name="text">
+         <string>Choose rectangle color</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Inner color:</string>
+         <string>Curve color:</string>
         </property>
        </widget>
       </item>
-    <item>
-     <widget class="QPushButton" name="btnInCol">
-      <property name="text">
-       <string>Choose fill color</string>
-      </property>
-     </widget>
-    </item>
+      <item>
+       <widget class="QPushButton" name="btnInCol">
+        <property name="text">
+         <string>Choose curve color</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QListWidget" name="pointList">
+        <property name="dragEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="dragDropMode">
+         <enum>QAbstractItemView::InternalMove</enum>
+        </property>
+       </widget>
+      </item>
       <item>
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Ordinate:</string>
+         <string>Choose 't' parameter (pace):</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="sbOrd">
-        <property name="minimumSize">
-         <size>
-          <width>150</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>101</width>
-          <height>21</height>
-         </size>
-        </property>
-        <property name="minimum">
-         <number>-10</number>
-        </property>
+       <widget class="QDoubleSpinBox" name="valueT">
         <property name="maximum">
-         <number>10</number>
+         <double>1.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.005000000000000</double>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Abscise:</string>
+         <string>Choose minimum value for 't':</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="sbAbs">
-        <property name="minimum">
-         <number>-10</number>
-        </property>
+       <widget class="QDoubleSpinBox" name="minValueT">
         <property name="maximum">
-         <number>10</number>
+         <double>1.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.005000000000000</double>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="label_5">
+       <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Radius:</string>
+         <string>Choose maximum value for 't':</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSpinBox" name="sbRadius">
-        <property name="minimumSize">
-         <size>
-          <width>150</width>
-          <height>23</height>
-         </size>
-        </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
+       <widget class="QDoubleSpinBox" name="maxValueT">
         <property name="maximum">
-         <number>10</number>
+         <double>1.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.005000000000000</double>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnCreate">
         <property name="text">
-         <string>CREATE</string>
+         <string>ADD</string>
         </property>
        </widget>
       </item>

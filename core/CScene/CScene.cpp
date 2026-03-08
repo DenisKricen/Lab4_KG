@@ -54,7 +54,16 @@ void CScene::drawCoorSystem(QPainter& painter, int width, int height, int marks)
 }
 
 CScene::CScene(QObject* parent) : QObject(parent){
+    CBeziersCurve* c = new CBeziersCurve();
+    addFigure(c);
+}
 
+CBeziersCurve* CScene::getCurve() {
+    for (auto fig : figures) {
+        if (fig->getType() == "beziers_curve")
+            return static_cast<CBeziersCurve*>(fig);
+    }
+    return nullptr;
 }
 
 void CScene::setWidget(QWidget* widget){
@@ -94,7 +103,10 @@ void CScene::render(QPainter& painter) {
     
     painter.save();
     painter.translate(cvWd/2, cvHt/2);
-    painter.scale(absSegment, ordSegment); 
+    QPen pen(Qt::black, 2);
+    pen.setCosmetic(true);
+    painter.setPen(pen);
+    painter.scale(absSegment, -ordSegment); 
     
     for(auto figure : figures) {
         figure->draw(painter);
@@ -134,6 +146,8 @@ void CScene::loadFigures(const std::string& filename) {
             figures.push_back(CHexagon::deserialize(data));
         } else if(type == "triangle") {
             figures.push_back(CTriangle::deserialize(data));
+        } else if(type == "beziers_curve") {
+            figures.push_back(CBeziersCurve::deserialize(data));
         }
     }
     file.close();

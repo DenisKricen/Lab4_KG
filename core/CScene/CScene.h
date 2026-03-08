@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QObject>
 #include "Figures/CFigure/CFigure.h"
+#include "Figures/CBeziersCurve/CBeziersCurve.h"
 #include "CCanvas/CCanvas.h"
 #include <vector>
 #include <string>
@@ -14,6 +15,7 @@ class CScene : public QObject {
 
     CCanvas* canvas;
     std::vector<CFigure*> figures;
+    CBeziersCurve curve;
 
     double ordSegment;
     double absSegment;
@@ -28,6 +30,7 @@ public:
     void addFigure(CFigure* figure);
     void clearFigures();
     void render(QPainter& painter);
+    CBeziersCurve* getCurve();
     
     void saveFigures(const std::string& filename);
     void loadFigures(const std::string& filename);

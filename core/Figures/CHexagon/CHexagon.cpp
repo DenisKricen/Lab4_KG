@@ -28,7 +28,7 @@ void CHexagon::draw(QPainter& painter) {
     painter.setBrush(fillColor);
     painter.save();
     
-    painter.translate(centerX, -centerY);
+    painter.translate(centerX, centerY);
 
     QPolygonF hexagon;
     QPolygonF center;
@@ -37,7 +37,7 @@ void CHexagon::draw(QPainter& painter) {
         double dx = size * cos(angle);
         double dy = size * sin(angle);
         
-        hexagon << QPointF(dx, -dy);
+        hexagon << QPointF(dx, dy);
     }
     painter.drawPolygon(hexagon);
 

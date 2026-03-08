@@ -9,9 +9,6 @@ void CProperties::updateProperties(Ui::CMainWindow* ui, const QColor& out, const
 
     outColor = out;
     fillColor = fill;
-    ordinate = ui->sbOrd->value();
-    abscise = ui->sbAbs->value();
-    circumradius = ui->sbRadius->value();
 }
 
 void CProperties::setCoefs(double abs, double ord) {
