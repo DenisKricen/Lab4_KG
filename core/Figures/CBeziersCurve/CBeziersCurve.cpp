@@ -1,8 +1,12 @@
 #include "CBeziersCurve.h"
+#include "utils/utils.h"
 #include <cmath>
 #include <sstream>
+#include <iostream>
 #include <QElapsedTimer>
 #include <QDebug>
+#include <fstream>
+using std::cout, std::endl;
 
 CBeziersCurve::CBeziersCurve() {
     pace=0.05;
@@ -180,15 +184,15 @@ void CBeziersCurve::drawParam(QPainter& painter) {
         points.append(point);
     }
 
+    QString msg = QString("Drawing Beziers curve via parametric method: %1 ms").arg(timer.nsecsElapsed()/1000000.0, 0, 'f', 4);
+    qDebug() << msg;
+    logToFile(msg);
+
     painter.save();
     QPen pen(curveColor, 2);
     pen.setCosmetic(true);
     painter.setPen(pen);
     painter.drawPolyline(points);
-
-    // Timer showing
-    qDebug() << "Drawing Beziers curve via parametric method: " << (timer.nsecsElapsed()/1000000.0) << " ms";
-
     painter.restore();
     drawRect(painter);
 }
@@ -198,6 +202,8 @@ void CBeziersCurve::drawMatrix(QPainter& painter) {
     int dotsCount = curve.size();
     int n = dotsCount - 1;
     
+
+    // Timer
     QElapsedTimer timer;
     timer.start();
 
@@ -243,15 +249,15 @@ void CBeziersCurve::drawMatrix(QPainter& painter) {
         points.append(point);
     }
 
+    QString msg = QString("Drawing Beziers curve via matrix method: %1 ms").arg(timer.nsecsElapsed()/1000000.0, 0, 'f', 4);
+    qDebug() << msg;
+    logToFile(msg);
+
     painter.save();
     QPen pen(curveColor, 2);
     pen.setCosmetic(true);
     painter.setPen(pen);
     painter.drawPolyline(points);
-
-    qDebug() << "Drawing Beziers curve via matrix method: " << (timer.nsecsElapsed()/1000000.0) << " ms";
-
-
     painter.restore();
     drawRect(painter);
 }

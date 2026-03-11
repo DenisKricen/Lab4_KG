@@ -15,6 +15,8 @@
 #include <QLabel>
 #include <iostream>
 #include <cmath>
+#include <fstream>
+#include "utils/utils.h"
 using std::cout, std::endl;
 
 CMainWindow::CMainWindow(QWidget *parent, int randomPoints) : QWidget(parent), ui(new Ui::CMainWindow) {
@@ -73,6 +75,9 @@ CMainWindow::CMainWindow(QWidget *parent, int randomPoints) : QWidget(parent), u
         CBeziersCurve* curve = scene->getCurve();
         if (curve) {
             curve->setPace(val);
+            QString msg = QString("t: %1").arg(val, 0, 'f', 4);
+            cout << msg.toStdString() << endl;
+            logToFile(msg);
             canvas->update();
         }
     });
@@ -81,6 +86,9 @@ CMainWindow::CMainWindow(QWidget *parent, int randomPoints) : QWidget(parent), u
         CBeziersCurve* curve = scene->getCurve();
         if (curve) {
             curve->setTMin(val);
+            QString msg = QString("t min: %1").arg(val, 0, 'f', 4);
+            cout << msg.toStdString() << endl;
+            logToFile(msg);
             canvas->update();
         }
     });
@@ -89,6 +97,9 @@ CMainWindow::CMainWindow(QWidget *parent, int randomPoints) : QWidget(parent), u
         CBeziersCurve* curve = scene->getCurve();
         if (curve) {
             curve->setTMax(val);
+            QString msg = QString("t max: %1").arg(val, 0, 'f', 4);
+            cout << msg.toStdString() << endl;
+            logToFile(msg);
             canvas->update();
         }
     });
@@ -222,6 +233,9 @@ void CMainWindow::onMatrixMode() {
     if (curve) {
         curve->setDrawMethod(&CBeziersCurve::drawMatrix);
         matrixMode = true;
+        QString msg = "Drawing Beziers curve via MATRIX mode";
+        cout << msg.toStdString() << endl;
+        logToFile(msg);
         updateLog();
         canvas->update();
     }
@@ -232,6 +246,9 @@ void CMainWindow::onParamMode() {
     if (curve) {
         curve->setDrawMethod(&CBeziersCurve::drawParam);
         matrixMode = false;
+        QString msg = "Drawing Beziers curve via PARAMETERS mode";
+        cout << msg.toStdString() << endl;
+        logToFile(msg);
         updateLog();
         canvas->update();
     }
@@ -264,7 +281,9 @@ void CMainWindow::generateRandomPoints(int count) {
         curve->addPoint(QPointF(x, y));
     }
 
-    cout << "Generated " << count << " random points for Bezier curve" << endl;
+    QString msg = QString("Generated %1 random points for Bezier curve").arg(count);
+    cout << msg.toStdString() << endl;
+    logToFile(msg);
 }
 
 void CMainWindow::onSetPointsClicked() {
@@ -297,3 +316,5 @@ void CMainWindow::onSetPointsClicked() {
         canvas->update();
     }
 }
+
+

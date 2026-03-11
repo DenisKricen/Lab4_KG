@@ -26,6 +26,7 @@ add_executable( Lab2_KG
                 core/CProperties/CProperties.cpp
                 core/Figures/CBeziersCurve/CBeziersCurve.cpp
                 core/CPointDialog/CPointDialog.cpp
+                core/utils/utils.cpp
 )
 
 target_include_directories(Lab2_KG PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/core)
