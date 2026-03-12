@@ -151,11 +151,26 @@ void CBeziersCurve::drawRect(QPainter& painter) {
     }
 
     painter.save();
-    QPen boxPen(rectColor, 2, Qt::DashLine);
+    QPen boxPen(Qt::black, 2, Qt::DashLine);
     boxPen.setCosmetic(true);
     painter.setPen(boxPen);
 
     painter.drawRect(QRectF(QPointF(minX, minY), QPointF(maxX, maxY)));
+    painter.restore();
+}
+
+void CBeziersCurve::drawCharacteristicPolygon(QPainter& painter) {
+    const auto& pts = getPoints();
+    if (pts.size() < 2) return;
+
+    painter.save();
+    QPen polyPen(rectColor, 1, Qt::DashLine);
+    polyPen.setCosmetic(true);
+    painter.setPen(polyPen);
+
+    for (int i = 0; i < pts.size() - 1; ++i) {
+        painter.drawLine(pts[i], pts[i+1]);
+    }
     painter.restore();
 }
 
@@ -170,7 +185,7 @@ void CBeziersCurve::drawParam(QPainter& painter) {
 
     QVector<QPointF> points;
     int numSteps = std::max(1, static_cast<int>(std::ceil((tMax - tMin) / pace)));
-    for(int step = 0; step <= numSteps; ++step) {
+    for(int step = 0; step <= numSteps; step++) {
         double t = tMin + step * (tMax - tMin) / numSteps;
         QPointF point;
         for(int i=0;i<dotsCount;i++) {
@@ -195,6 +210,7 @@ void CBeziersCurve::drawParam(QPainter& painter) {
     painter.drawPolyline(points);
     painter.restore();
     drawRect(painter);
+    drawCharacteristicPolygon(painter);
 }
 
 void CBeziersCurve::drawMatrix(QPainter& painter) {
@@ -202,7 +218,6 @@ void CBeziersCurve::drawMatrix(QPainter& painter) {
     int dotsCount = curve.size();
     int n = dotsCount - 1;
     
-
     // Timer
     QElapsedTimer timer;
     timer.start();
@@ -219,10 +234,10 @@ void CBeziersCurve::drawMatrix(QPainter& painter) {
     QVector<QPointF> points;
     QVector<double> T(dotsCount);
     QVector<double> C(dotsCount);
+
     int numSteps = std::max(1, static_cast<int>(std::ceil((tMax - tMin) / pace)));
     for(int step = 0; step <= numSteps; ++step) {
         double t = tMin + step * (tMax - tMin) / numSteps;
-        
         
         for(int i = 0; i <= n; i++) {
             T[i] = pow(t, n - i); 
@@ -255,6 +270,7 @@ void CBeziersCurve::drawMatrix(QPainter& painter) {
     painter.drawPolyline(points);
     painter.restore();
     drawRect(painter);
+    drawCharacteristicPolygon(painter);
 }
 
 QString CBeziersCurve::getMatrixInfo() const {

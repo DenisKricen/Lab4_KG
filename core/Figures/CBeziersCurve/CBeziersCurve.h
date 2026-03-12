@@ -41,6 +41,7 @@ class CBeziersCurve : public CFigure {
     void draw(QPainter& painter) override;
     void drawParam(QPainter& painter);
     void drawMatrix(QPainter& painter);
+    void drawCharacteristicPolygon(QPainter& painter);
     void setDrawMethod(void (CBeziersCurve::* drawMethod)(QPainter&));
     bool isMatrixMode() const;
 
