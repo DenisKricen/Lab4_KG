@@ -21,6 +21,7 @@
 #include "CImageTransfer/CImageTransfer.h"
 #include "CMouseObserver/CMouseObserver.h"
 #include "COverlayImage/COverlayImage.h"
+#include "CImageManager/CImageManager.h"
 using std::cout, std::endl;
 
 CMainWindow::CMainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::CMainWindow) {
@@ -104,7 +105,55 @@ CMainWindow::CMainWindow(QWidget *parent) : QWidget(parent), ui(new Ui::CMainWin
         canvas->update();
     });
 
-    // Slots connections
+    // Change color models
+    connect(ui->colorModelBox, &QComboBox::currentIndexChanged, this, [this](int index) {
+        ui->modelPages->setCurrentIndex(index);
+        
+        CImage* img = scene->getMainImage();
+        if (!img || img->isNull()) 
+            return;
+
+        QString currentModel = ui->colorModelBox->currentText();
+
+        if (currentModel == "CMYK") {
+            CImageManager::convertToCMYK(img);
+        } else if (currentModel == "HSB") {
+            CImageManager::convertToHSB(img);
+        }
+
+        canvas->update();
+    });
+
+    // Apply button, set blue hue brighness attribute for main image
+    connect(ui->btnApply, &QPushButton::clicked, this, [this]() {
+        CImage* img = scene->getMainImage();
+        
+        if (!img || img->isNull()) {
+            QMessageBox::warning(this, "Warning", "No image to proceed.");
+            return;
+        }
+
+        QRect processArea = pixelViewer->getLockedArea();
+        if (processArea.isNull()) {
+            // If no area selected- apply to whole image
+            processArea = QRect(0, 0, img->width(), img->height());
+        }
+
+        QString currentModel = ui->colorModelBox->currentText();
+
+        if (currentModel == "HSB") {
+
+            double offset = ui->blueBrighnessSpinbox->value(); 
+            CImageManager::adjustBlueBrightness(img, processArea, offset);
+            
+        } else if (currentModel == "CMYK") {
+            // NOTHING
+        }
+
+        canvas->update();
+    });
+
+    // Import/Export connections
     connect(ui->btnImport, &QPushButton::clicked, this, &CMainWindow::onImportClicked);
     connect(ui->btnExport, &QPushButton::clicked, this, &CMainWindow::onExportClicked);
     

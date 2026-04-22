@@ -59,23 +59,27 @@ QString CPixelViewer::getStatusRGB() const {
         .arg(currentColor.red()).arg(currentColor.green()).arg(currentColor.blue());
 }
 
-QString CPixelViewer::getStatusCMYK() const {
-    if (!currentColor.isValid()) 
-        return "CMYK: -";
-
-    int c, m, y, k, a;
-    currentColor.getCmyk(&c, &m, &y, &k, &a);
-    return QString("CMYK: (%1, %2, %3, %4)").arg(c).arg(m).arg(y).arg(k);
+QString CPixelViewer::getStatusHSB() const {
+    if (!currentColor.isValid()) return "HSB: -";
+    
+    int h = currentColor.hsvHue();
+    if (h < 0) h = 0; 
+    
+    int s = static_cast<int>(currentColor.hsvSaturationF() * 100.0);
+    int b = static_cast<int>(currentColor.valueF() * 100.0); 
+    
+    return QString("HSB: (%1°, %2%, %3%)").arg(h).arg(s).arg(b);
 }
 
-QString CPixelViewer::getStatusHSB() const {
-    if (!currentColor.isValid()) 
-        return "HSB: -";
-
-    // In Qt, HSV and HSB are identical
-    int h, s, v, a;
-    currentColor.getHsv(&h, &s, &v, &a);
-    return QString("HSB: (%1°, %2%, %3%)").arg(h).arg(s).arg(v);
+QString CPixelViewer::getStatusCMYK() const {
+    if (!currentColor.isValid()) return "CMYK: -";
+    
+    int c = static_cast<int>(currentColor.cyanF() * 100.0);
+    int m = static_cast<int>(currentColor.magentaF() * 100.0);
+    int y = static_cast<int>(currentColor.yellowF() * 100.0);
+    int k = static_cast<int>(currentColor.blackF() * 100.0);
+    
+    return QString("CMYK: (%1%, %2%, %3%, %4%)").arg(c).arg(m).arg(y).arg(k);
 }
 
 QString CPixelViewer::getCoordinatesText() const {

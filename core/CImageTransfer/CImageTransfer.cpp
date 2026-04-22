@@ -1,6 +1,7 @@
 #include "CImageTransfer.h"
 #include "CImage/CImage.h" 
 #include <QDebug>
+#include <QFileInfo>
 
 CImage* CImageTransfer::importImage(const QString& path) {
     // Validate the provided file path
@@ -44,12 +45,19 @@ bool CImageTransfer::exportImage(const QString& path, const CImage* image) {
         return false;
     }
 
+    // Add default extension
+    QFileInfo fileInfo(path);
+    QString defaultPath = path;
+    if (fileInfo.suffix().isEmpty()) {
+        defaultPath += ".png";
+    }
+
     // Attempt to save the image to the specified path
-    if (image->save(path)) {
-        qDebug() << "Successfully exported image to:" << path;
+    if (image->save(defaultPath)) {
+        qDebug() << "Successfully exported image to:" << defaultPath;
         return true;
     } else {
-        qWarning() << "Failed to save image to:" << path;
+        qWarning() << "Failed to save image to:" << defaultPath;
         return false;
     }
 }
