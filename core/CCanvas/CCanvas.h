@@ -10,15 +10,28 @@ class CCanvas : public QWidget {
 
     CScene* scene;
 
+    double scaleFactor;
+    QPointF offset;
+
+    QPoint lastMousePos;
+    bool isPanning;
+
     public:
 
     explicit CCanvas(CScene* s, QWidget* parent=nullptr);
     explicit CCanvas(QWidget* parent=nullptr);
+    
     void setScene(CScene* s);
-    virtual void paintEvent(QPaintEvent* event) override;
-
     double getScaleFactor() const;
     QPointF getOffset() const;
+    
+    protected:
+
+    virtual void paintEvent(QPaintEvent* event) override;
+    void wheelEvent(QWheelEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 };
 
