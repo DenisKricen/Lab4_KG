@@ -19,3 +19,11 @@ void CCanvas::paintEvent(QPaintEvent* event) {
 
     scene->render(painter);
 }
+
+double CCanvas::getScaleFactor() const {
+    return 1;
+}
+
+QPointF CCanvas::getOffset() const {
+    return QPointF(0, 0);
+}

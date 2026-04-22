@@ -20,6 +20,12 @@ add_executable( Lab4_KG
                 core/CCanvas/CCanvas.cpp
                 core/CMainWindow/CMainWindow.cpp
                 core/CMainWindow/CMainWindow.ui
+
+                core/CImage/CImage.cpp
+                core/CImageTransfer/CImageTransfer.cpp
+                core/CMouseObserver/CMouseObserver.cpp
+                core/COverlayImage/COverlayImage.cpp
+                core/CPixelViewer/CPixelViewer.cpp
 )
 
 target_include_directories(Lab4_KG PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/core)

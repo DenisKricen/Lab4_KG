@@ -17,6 +17,9 @@ class CCanvas : public QWidget {
     void setScene(CScene* s);
     virtual void paintEvent(QPaintEvent* event) override;
 
+    double getScaleFactor() const;
+    QPointF getOffset() const;
+
 };
 
 #endif//CCANVAS_H
